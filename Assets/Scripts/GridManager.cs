@@ -8,6 +8,8 @@ public class GridManager : MonoBehaviour
 {
     [SerializeField] private GameObject gridCellPrefab;
     
+    public bool bIsAnyCellSelected;
+    
     private int gridWidth;
     private int gridHeight;
     private float cellSpacing;
@@ -87,6 +89,8 @@ public class GridManager : MonoBehaviour
             Destroy(childCell.gameObject);
         }
         gridCells.Clear();
+        
+        bIsAnyCellSelected = false;
     }
     
     private void AdjustCamera()

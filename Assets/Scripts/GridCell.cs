@@ -9,6 +9,9 @@ public class GridCell : MonoBehaviour
 
     private Color defaultColor;
     private Color highlightColor = Color.gray;
+    private Color selectedColor = Color.red;
+
+    private bool bIsSelected;
 
     public void Initialize(GridManager manager, GameObject cellObject)
     {
@@ -22,7 +25,23 @@ public class GridCell : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
+            if (bIsSelected)
+            {
+                gridManager.bIsAnyCellSelected = false;
+            }
             gridManager.RemoveCell(cell);
+        }
+    }
+
+    private void OnMouseDown()
+    {
+        if (Input.GetMouseButtonDown(0) && !gridManager.bIsAnyCellSelected)
+        {
+            gridManager.bIsAnyCellSelected = true;
+            bIsSelected = true;
+            
+            defaultColor = selectedColor;
+            spriteRenderer.color = defaultColor;
         }
     }
 
