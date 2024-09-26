@@ -21,37 +21,44 @@ public class GridCell : MonoBehaviour
         defaultColor = spriteRenderer.color;
     }
 
+    public void Select()
+    {
+        bIsSelected = true;
+        spriteRenderer.color = selectedColor;
+    }
+
+    public void Deselect()
+    {
+        bIsSelected = false;
+        spriteRenderer.color = defaultColor;
+    }
+
     private void OnMouseOver()
     {
         if (Input.GetMouseButtonDown(1))
         {
-            if (bIsSelected)
-            {
-                gridManager.bIsAnyCellSelected = false;
-            }
             gridManager.RemoveCell(cell);
         }
-    }
 
-    private void OnMouseDown()
-    {
-        if (Input.GetMouseButtonDown(0) && !gridManager.bIsAnyCellSelected)
+        if (Input.GetMouseButtonDown(0))
         {
-            gridManager.bIsAnyCellSelected = true;
-            bIsSelected = true;
-            
-            defaultColor = selectedColor;
-            spriteRenderer.color = defaultColor;
+            gridManager.SelectCell(this);
         }
     }
 
     private void OnMouseEnter()
     {
-        spriteRenderer.color = highlightColor;
+        if (!bIsSelected)
+        {
+            spriteRenderer.color = highlightColor;   
+        }
     }
 
     private void OnMouseExit()
     {
-        spriteRenderer.color = defaultColor;
+        if (!bIsSelected)
+        {
+            spriteRenderer.color = defaultColor;
+        }
     }
 }

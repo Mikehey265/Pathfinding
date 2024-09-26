@@ -8,14 +8,13 @@ public class GridManager : MonoBehaviour
 {
     [SerializeField] private GameObject gridCellPrefab;
     
-    public bool bIsAnyCellSelected;
-    
     private int gridWidth;
     private int gridHeight;
     private float cellSpacing;
     
     private Camera mainCamera;
     private List<GameObject> gridCells = new List<GameObject>();
+    private GridCell selectedCell = null;
 
     private void Awake()
     {
@@ -53,7 +52,24 @@ public class GridManager : MonoBehaviour
     public void RemoveCell(GameObject cell)
     {
         gridCells.Remove(cell);
+
+        if (selectedCell != null && selectedCell.gameObject == cell)
+        {
+            selectedCell = null;
+        }
+        
         Destroy(cell);
+    }
+
+    public void SelectCell(GridCell cellToSelect)
+    {
+        if (selectedCell != null)
+        {
+            selectedCell.Deselect();
+        }
+
+        selectedCell = cellToSelect;
+        selectedCell.Select();
     }
 
     private void SpawnGrid()
@@ -89,8 +105,8 @@ public class GridManager : MonoBehaviour
             Destroy(childCell.gameObject);
         }
         gridCells.Clear();
-        
-        bIsAnyCellSelected = false;
+
+        selectedCell = null;
     }
     
     private void AdjustCamera()
