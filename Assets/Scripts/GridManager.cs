@@ -1,5 +1,3 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -14,7 +12,8 @@ public class GridManager : MonoBehaviour
     
     private Camera mainCamera;
     private List<GameObject> gridCells = new List<GameObject>();
-    private GridCell selectedCell = null;
+    private GridCell startingCell = null;
+    private GridCell goalCell = null;
 
     private void Awake()
     {
@@ -53,23 +52,39 @@ public class GridManager : MonoBehaviour
     {
         gridCells.Remove(cell);
 
-        if (selectedCell != null && selectedCell.gameObject == cell)
+        if (startingCell != null && startingCell.gameObject == cell)
         {
-            selectedCell = null;
+            startingCell = null;
+        }
+
+        if (goalCell != null && goalCell.gameObject == cell)
+        {
+            goalCell = null;
         }
         
         Destroy(cell);
     }
 
-    public void SelectCell(GridCell cellToSelect)
+    public void SelectStartingCell(GridCell cellToSelect)
     {
-        if (selectedCell != null)
+        if (startingCell != null)
         {
-            selectedCell.Deselect();
+            startingCell.Deselect();
         }
 
-        selectedCell = cellToSelect;
-        selectedCell.Select();
+        startingCell = cellToSelect;
+        startingCell.SelectAsStartingCell();
+    }
+    
+    public void SelectGoalCell(GridCell cellToSelect)
+    {
+        if (goalCell != null)
+        {
+            goalCell.Deselect();
+        }
+
+        goalCell = cellToSelect;
+        goalCell.SelectAsGoalCell();
     }
 
     private void SpawnGrid()
@@ -106,7 +121,8 @@ public class GridManager : MonoBehaviour
         }
         gridCells.Clear();
 
-        selectedCell = null;
+        startingCell = null;
+        goalCell = null;
     }
     
     private void AdjustCamera()

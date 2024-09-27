@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class GridCell : MonoBehaviour
@@ -9,9 +8,11 @@ public class GridCell : MonoBehaviour
 
     private Color defaultColor;
     private Color highlightColor = Color.gray;
-    private Color selectedColor = Color.red;
+    private Color startingColor = Color.green;
+    private Color goalColor = Color.red;
 
-    private bool bIsSelected;
+    private bool bIsSelectedAsStarting;
+    private bool bIsSelectedAsGoal;
 
     public void Initialize(GridManager manager, GameObject cellObject)
     {
@@ -21,34 +22,48 @@ public class GridCell : MonoBehaviour
         defaultColor = spriteRenderer.color;
     }
 
-    public void Select()
+    public void SelectAsStartingCell()
     {
-        bIsSelected = true;
-        spriteRenderer.color = selectedColor;
+        bIsSelectedAsStarting = true;
+        bIsSelectedAsGoal = false;
+        spriteRenderer.color = startingColor;
+    }
+    
+    public void SelectAsGoalCell()
+    {
+        bIsSelectedAsStarting = false;
+        bIsSelectedAsGoal = true;
+        spriteRenderer.color = goalColor;
     }
 
     public void Deselect()
     {
-        bIsSelected = false;
+        bIsSelectedAsStarting = false;
+        bIsSelectedAsGoal = false;
         spriteRenderer.color = defaultColor;
     }
 
     private void OnMouseOver()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            gridManager.RemoveCell(cell);
-        }
-
         if (Input.GetMouseButtonDown(0))
         {
-            gridManager.SelectCell(this);
+            gridManager.SelectStartingCell(this);
+        }
+        
+        if (Input.GetMouseButtonDown(1))
+        {
+            gridManager.SelectGoalCell(this);
+        }
+
+        if (Input.GetMouseButtonDown(2))
+        {
+            gridManager.RemoveCell(cell);
         }
     }
 
     private void OnMouseEnter()
     {
-        if (!bIsSelected)
+        if (!bIsSelectedAsStarting && !bIsSelectedAsGoal)
         {
             spriteRenderer.color = highlightColor;   
         }
@@ -56,7 +71,7 @@ public class GridCell : MonoBehaviour
 
     private void OnMouseExit()
     {
-        if (!bIsSelected)
+        if (!bIsSelectedAsStarting && !bIsSelectedAsGoal)
         {
             spriteRenderer.color = defaultColor;
         }
